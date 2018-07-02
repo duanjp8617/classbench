@@ -1,11 +1,11 @@
 // File: db_generator.cc
-// David E. Taylor 
+// David E. Taylor
 // Applied Research Laboratory
 // Department of Computer Science and Engineering
 // Washington University in Saint Louis
 // det3@arl.wustl.edu
 //
-// Synthetic Database Generator 
+// Synthetic Database Generator
 // See README file for details
 
 #include "stdinc.h"
@@ -15,21 +15,21 @@
 #include "custom_db.h"
 #include "sys/time.h"
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-  char filename[1024];  
-  char in_filename[1024];  
+  char filename[1024];
+  char in_filename[1024];
 
-  FILE *fp_in; // input file pointer for parameters 
-  FILE *fp_std; // output file pointer for standard form filter file 
+  FILE *fp_in; // input file pointer for parameters
+  FILE *fp_std; // output file pointer for standard form filter file
 
-  int num_filters = 0; // number of filters 
-  
-  int smoothness = 0; // precision of database replication 
-  float addr_scope = 0; // adjustment to average address scope 
-  float port_scope = 0; // adjustment to average port scope 
-  
-  // Check for correct number of input arguments 
+  int num_filters = 0; // number of filters
+
+  int smoothness = 0; // precision of database replication
+  float addr_scope = 0; // adjustment to average address scope
+  float port_scope = 0; // adjustment to average port scope
+
+  // Check for correct number of input arguments
   if (argc > 8 || argc <= 1){
     fprintf(stderr,"Usage: db_generator -hrb (-c <input parameter file>) <number of filters> <smoothness> <address scope> <port scope> <output filename>\n");
     fprintf(stderr,"db_generator is a synthetic filter database generator.\n");
@@ -52,7 +52,7 @@ main(int argc, char *argv[])
   int custom = 0;
   int branch = 0;
   int c = 0;
-  // Check for switches 
+  // Check for switches
   while (--argc > 0 && (*++argv)[0] == '-'){
     while (c = *++argv[0]){
       switch (c) {
@@ -87,7 +87,7 @@ main(int argc, char *argv[])
       }
     }
   }
-  
+
   if (random == 1 && argc == 2){
     num_filters = atoi(argv[0]);
     strcpy(filename,argv[1]);
@@ -125,9 +125,9 @@ main(int argc, char *argv[])
     exit(1);
   }
 
-  // Open output file for writing 
+  // Open output file for writing
   fp_std = fopen(filename,"w");
-  
+
   // Allocate FilterList
   FilterList *filters = new FilterList();
   int filter_cnt;
@@ -142,7 +142,7 @@ main(int argc, char *argv[])
   seed = tp.tv_usec;
   srand48(seed);
 
-  // Generate Database 
+  // Generate Database
   if (random == 1) {
     // Random database generation
     filter_cnt = random_db_gen(num_filters,filters);
@@ -162,11 +162,10 @@ main(int argc, char *argv[])
   printf("\tRedundancy may be reduced by turning on address scaling (-b switch),\n");
   printf("\tincreasing the smoothness adjustment,\n");
   printf("\tor appropriately modifying the input parameter file.\n");
-  
+
   fclose(fp_std);
-  
+
   delete(filters);
 
-  return 0; 
+  return 0;
 }
-
